@@ -20,6 +20,7 @@ library(tidyr)
 library(car)
 library(caret)
 library(pROC)
+library(randomForest)
 ```
 
 ## Descripción del Data set
@@ -106,8 +107,8 @@ sapply(heart,function(x) sum(is.na(x)))
 
 # Se realiza la búsqueda de elementos que contengan valores vacios
 colSums(heart =="")
-```
 
+```
 Como resultado de los comandos ejecutados, se tiene que los atributos del dataset no contienen valores nulos ni tampoco valores vacios
 
 En el supuesto caso en que se tuviera atributos que contengan valores nulos o vacíos, la eficacia de las técnicas de tratamiento de estos valores está directamente relacionada con la razón por la cual tuvo su origen el valor perdido. Si tenemos alguna información acerca de ella, es posible que encontremos una regla para completar estos valores, por el contrario, si no tenemos dicha información, es necesario aplicar técnicas de evaluación de los valores perdidos que encuentren algún patrón que permita ya sea completarlos o descartarlos(en el caso que no afecten el análisis),decisión que depende en gran medida del tipo del valor perdido y la importancia del registro en la base de datos (Allison,2001).
@@ -330,7 +331,7 @@ logRegConfMat
 ### Clasificación utilizando el método random forest
 
 ```{r}
-library(randomForest)
+# Random Forest
 set.seed(10)
 RFModel <- randomForest(target ~ .,
                     data=trainData,
@@ -342,9 +343,6 @@ RFPredictionprob = predict(RFModel,testData,type="prob")[, 2]
 
 RFConfMat <- confusionMatrix(RFPrediction, testData[,"target"])
 RFConfMat
-
-AUC$RF <- roc(as.numeric(testData$num),as.numeric(as.matrix((RFPredictionprob))))$auc
-Accuracy$RF <- RFConfMat$overall['Accuracy']  
 ```
 
 ### Clasificación utilizando el método Support Vector Machine
